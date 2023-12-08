@@ -33,5 +33,6 @@
     <string name="muscle_gain">Muscle Gain</string>
     <string name="weight_loss">Weight Loss</string>
     <string name="general_health">General Health</string>
+    <string name="fitlife">FitLife</string>
 
 </resources>
