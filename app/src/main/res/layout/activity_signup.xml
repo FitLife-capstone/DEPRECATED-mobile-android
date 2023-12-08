@@ -236,7 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number" />
+                android:digits="0123456789"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!--        ACTIVITY FREQ-->
@@ -311,12 +311,12 @@
 
         <!--        CURRENT FITNESS LEVEL-->
         <TextView
-            android:id="@+id/currentFitnessLevelTextView"
+            android:id="@+id/fitnessLevelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:text="@string/current_fitness_level"
+            android:text="@string/fitness_level"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radio_gender"
@@ -329,7 +329,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="32dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/currentFitnessLevelTextView"
+            app:layout_constraintTop_toBottomOf="@id/fitnessLevelTextView"
             >
 
             <RadioButton

@@ -29,7 +29,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="primary_goal">Primary Goal</string>
-    <string name="current_fitness_level">Current Fitness Level</string>
+    <string name="fitness_level">Fitness Level</string>
     <string name="muscle_gain">Muscle Gain</string>
     <string name="weight_loss">Weight Loss</string>
     <string name="general_health">General Health</string>

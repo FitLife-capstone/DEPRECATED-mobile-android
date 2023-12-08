@@ -1,16 +1,13 @@
 package com.example.fitlife.view.signup
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Patterns
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.CheckBox
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -19,16 +16,21 @@ import com.example.fitlife.R
 import com.example.fitlife.data.Result
 import com.example.fitlife.databinding.ActivitySignupBinding
 import com.example.fitlife.helper.ViewModelFactory
-import java.util.logging.Logger
+
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
 
-    val equipments: MutableList<String> = ArrayList()
+    var gender: String = ""
+    var fitnessLevel: String = ""
+    var primaryGoal: String = ""
+    var valid: Boolean = true
+    var equipments: MutableList<String> = ArrayList()
 
     private val viewModel by viewModels<SignupViewModel> {
         ViewModelFactory.getInstance(this)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,53 +56,179 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
+        binding.radioGender.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { group, checkedId ->
+                val radio: RadioButton = findViewById(checkedId)
+                gender = radio.text.toString().trim()
+            })
+
+        binding.radioFitnessLevel.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { group, checkedId ->
+                val radio: RadioButton = findViewById(checkedId)
+                fitnessLevel = radio.text.toString().trim()
+            })
+
+        binding.radioPrimaryGoal.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { group, checkedId ->
+                val radio: RadioButton = findViewById(checkedId)
+                primaryGoal = radio.text.toString().trim()
+            })
+
+
         binding.signupButton.setOnClickListener {
-            val name = binding.nameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            Toast.makeText(
-                this,
-                equipments.toString(),
-                Toast.LENGTH_LONG
-            ).show()
+            if (gender==""){
+                if (valid){
+                    Toast.makeText(applicationContext,"Please select your gender",
+                        Toast.LENGTH_LONG).show()
+                }
+                valid = false
+            }else{
+                valid = true
+            }
 
+            if (fitnessLevel==""){
+                if (valid) {
+                    Toast.makeText(
+                        applicationContext, "Please select your fitness level",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                valid = false
+            }else{
+                valid = true
+            }
 
-            viewModel.register(name=name, email = email, password = password).observe(this) { result ->
-                if (result != null) {
-                    when (result) {
-                        is Result.Loading -> {
-                            binding.registerProgressBar.visibility = View.VISIBLE
-                            binding.signupButton.text = ""
-                        }
+            if (primaryGoal==""){
+                if (valid) {
+                    Toast.makeText(
+                        applicationContext, "Please select your primary goal",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                valid = false
 
-                        is Result.Success -> {
-                            binding.registerProgressBar.visibility = View.GONE
-                            binding.signupButton.text = "Sign Up"
+            }else{
+                valid = true
+            }
 
-                            AlertDialog.Builder(this).apply {
-                                setTitle("Yeah!")
-                                setMessage("Account with email: $email successfully created. Please login to post your story!")
-                                setPositiveButton("Next") { _, _ ->
-                                    finish()
-                                }
-                                create()
-                                show()
-                            }
-                        }
+            if (equipments.isEmpty()){
+                if (valid) {
+                    Toast.makeText(
+                        applicationContext, "Please select minimum 1 equipment",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                valid = false
+            }else{
+                valid = true
+            }
 
-                        is Result.Error -> {
-                            binding.registerProgressBar.visibility = View.GONE
-                            binding.signupButton.text = "Sign Up"
-                            Toast.makeText(
-                                this,
-                                result.error,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
+            val name = binding.nameEditText.text.toString().trim()
+            if (name==""){
+                binding.nameEditText.setError("Enter Name")
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val email = binding.emailEditText.text.toString().trim()
+            if (email==""){
+                binding.emailEditText.setError("Enter Email")
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val password = binding.passwordEditText.text.toString().trim()
+            if (password==""){
+                binding.passwordEditText.setError("Enter Password");
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val age = binding.ageEditText.text.toString().trim()
+            if (age==""){
+                binding.ageEditText.setError("Enter Age");
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val weight = binding.weightEditText.text.toString().trim()
+            if (weight==""){
+                binding.weightEditText.setError("Enter Weight");
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val height = binding.heightEditText.text.toString().trim()
+            if (height==""){
+                binding.heightEditText.setError("Enter Height");
+                valid = false
+            }else{
+                valid = true
+            }
+
+            val activityFrequency = binding.activityFreqEditText.text
+            if (activityFrequency.toString()==""){
+                binding.activityFreqEditText.setError("Enter Activity Frequency (0-7)");
+                valid = false
+            } else {
+                if (activityFrequency.toString().toInt() > 7){
+                    binding.activityFreqEditText.setError("Enter Activity Frequency (0-7)");
+                    valid = false
+                }else{
+                    valid = true
                 }
             }
 
+
+
+            if (valid){
+                viewModel.register(name=name, email = email, password = password).observe(this) { result ->
+                    if (result != null) {
+                        when (result) {
+                            is Result.Loading -> {
+                                binding.registerProgressBar.visibility = View.VISIBLE
+                                binding.signupButton.text = ""
+                            }
+
+                            is Result.Success -> {
+                                binding.registerProgressBar.visibility = View.GONE
+                                binding.signupButton.text = "Sign Up"
+
+                                AlertDialog.Builder(this).apply {
+                                    setTitle("Yeah!")
+                                    setMessage("Account with email: $email successfully created. Please login to post your story!")
+                                    setPositiveButton("Next") { _, _ ->
+                                        finish()
+                                    }
+                                    create()
+                                    show()
+                                }
+                            }
+
+                            is Result.Error -> {
+                                binding.registerProgressBar.visibility = View.GONE
+                                binding.signupButton.text = "Sign Up"
+                                Toast.makeText(
+                                    this,
+                                    result.error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }else{
+                valid = true
+                Toast.makeText(
+                    applicationContext, "Please fill all the fields",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
